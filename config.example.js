@@ -11,4 +11,7 @@ exports.config = {
       banner: '',
     },
   },
+  googleAnalytics: {
+    ios: '',
+  },
 };

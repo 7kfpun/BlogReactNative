@@ -10,11 +10,17 @@ import {
 import { AdMobBanner } from 'react-native-admob';
 import SafariView from 'react-native-safari-view';
 import SearchBar from 'react-native-material-design-searchbar';
+import {
+  GoogleAnalyticsTracker,
+  GoogleAnalyticsSettings,
+} from 'react-native-google-analytics-bridge';
 
 import fuzzy from 'fuzzy';
 
 import data from './data';
 import { config } from './config';
+
+let tracker = new GoogleAnalyticsTracker(config.googleAnalytics.ios);
 
 const styles = StyleSheet.create({
   container: {
@@ -53,14 +59,17 @@ export default class Blog extends Component {
       };
       const results = fuzzy.filter(text, this.state.data, options);
       this.setState({ matches: results.map(item => item.original) });
+      tracker.trackEvent('user-action', 'search');
     }
   }
 
-  openUrl(url) {
-    SafariView.show({ url });
+  openUrl(item) {
+    SafariView.show({ url: item.url });
+    tracker.trackEvent('user-action', 'open-url', { label: item.key });
   }
 
   render() {
+    tracker.trackScreenView('Home');
     return (
       <View style={styles.container}>
         <View style={{ marginTop: 20 }}>
@@ -77,7 +86,7 @@ export default class Blog extends Component {
         </View>
         <FlatList
           data={this.state.matches}
-          renderItem={({ item }) => (<TouchableOpacity onPress={() => this.openUrl(item.url)}>
+          renderItem={({ item }) => (<TouchableOpacity onPress={() => this.openUrl(item)}>
             <View style={styles.row}>
               <Text style={styles.nameText}>{item.key}</Text>
               <Text style={styles.descriptionText}>{item.description}</Text>
