@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import { AdMobBanner } from 'react-native-admob';
 import SafariView from 'react-native-safari-view';
 import SearchBar from 'react-native-material-design-searchbar';
 
 import fuzzy from 'fuzzy';
 
 import data from './data';
+import { config } from './config';
 
 const styles = StyleSheet.create({
   container: {
@@ -81,6 +83,10 @@ export default class Blog extends Component {
               <Text style={styles.descriptionText}>{item.description}</Text>
             </View>
           </TouchableOpacity>)}
+        />
+        <AdMobBanner
+          bannerSize="smartBannerPortrait"
+          adUnitID={config.admob.ios.banner}
         />
       </View>
     );
